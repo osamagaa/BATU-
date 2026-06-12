@@ -28,6 +28,8 @@
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   /* ─── STARFIELD ─── */
@@ -59,7 +61,7 @@
     position: relative; z-index: 10;
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center;
-    padding: 40px 20px 20px;
+    padding: 40px 20px 80px;
     opacity: 0;
     transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
@@ -353,27 +355,10 @@
     transform: translateY(-2px);
   }
 
-  /* ─── FLOATING CAMERA BUTTON ─── */
-  #cam-btn {
-    position: fixed;
-    left: 20px; bottom: 80px;
-    width: 58px; height: 58px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold-light), var(--gold));
-    border: none; cursor: pointer;
-    font-size: 1.5rem;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 6px 24px rgba(201,150,60,0.5);
-    z-index: 100;
-    transition: all 0.25s;
-    color: var(--navy);
-  }
-  #cam-btn:hover { transform: scale(1.12); box-shadow: 0 8px 32px rgba(201,150,60,0.7); }
-
   /* ─── FLOATING MUSIC BUTTON ─── */
   #music-fab {
     position: fixed;
-    left: 20px; bottom: 148px;
+    right: 20px; bottom: 80px;
     width: 58px; height: 58px;
     border-radius: 50%;
     background: rgba(30,10,60,0.9);
@@ -440,43 +425,6 @@
   }
   .modal-close:hover { background: rgba(255,255,255,0.15); }
   .modal-box { position: relative; }
-
-  /* ─── CAMERA MODAL ─── */
-  #cam-preview-wrap {
-    position: relative;
-    border-radius: 16px; overflow: hidden;
-    margin-bottom: 16px;
-    background: #000;
-    aspect-ratio: 4/3;
-  }
-  #cam-video, #cam-canvas {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-  }
-  #cam-canvas { display: none; }
-
-  .cam-overlay-text {
-    position: absolute; bottom: 14px; left: 0; right: 0;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(0.8rem, 3vw, 1.1rem);
-    font-weight: 700;
-    color: var(--gold-light);
-    text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-    pointer-events: none;
-    letter-spacing: 0.12em;
-  }
-  .cam-hat {
-    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    pointer-events: none;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
-    animation: hatBounce 2s ease-in-out infinite;
-  }
-  @keyframes hatBounce { 0%,100%{transform:translateX(-50%) rotate(-5deg)} 50%{transform:translateX(-50%) rotate(5deg)} }
-
-  .cam-btn-row {
-    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-  }
 
   /* ─── SHARE MODAL ─── */
   .share-textarea {
@@ -562,34 +510,20 @@
 
   /* ─── FOOTER ─── */
   footer {
-    margin-top: auto; padding: 24px 0 12px;
+    position: relative;
+    z-index: 10;
+    padding: 20px;
     text-align: center;
-    font-size: 0.78rem;
-    color: rgba(168,152,120,0.5);
+    font-size: 0.9rem;
+    color: var(--gold);
+    font-weight: 600;
     letter-spacing: 0.04em;
+    background: rgba(13, 27, 42, 0.8);
+    border-top: 1px solid rgba(201, 150, 60, 0.2);
+    backdrop-filter: blur(8px);
+    margin-top: auto;
   }
-  footer span { color: var(--gold); opacity: 0.7; }
-
-  /* ─── PULSE RING (music btn) ─── */
-  .music-ring {
-    position: relative; display: inline-flex;
-    align-items: center; justify-content: center;
-  }
-  .music-ring::after {
-    content: '';
-    position: absolute; inset: -6px;
-    border-radius: 50px;
-    border: 2px solid var(--gold);
-    opacity: 0;
-    animation: none;
-  }
-  .music-ring.playing::after {
-    animation: ring-pulse 1.5s ease-out infinite;
-  }
-  @keyframes ring-pulse {
-    0%   { inset: -4px; opacity: 0.7; }
-    100% { inset: -14px; opacity: 0; }
-  }
+  footer span { color: var(--gold-light); opacity: 0.9; }
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 480px) {
@@ -598,6 +532,9 @@
     .time-block { padding: 14px 12px; min-width: 70px; }
     .btn-row { gap: 10px; }
     .btn { padding: 11px 18px; font-size: 0.82rem; }
+    #app {
+      padding: 30px 15px 80px;
+    }
   }
 </style>
 </head>
@@ -610,7 +547,7 @@
   <source src="اغنية ده وقتنا - انا بتخرج.mp3" type="audio/mpeg">
 </audio>
 
-<!-- ═══ SPLASH SCREEN (الزر الكبير: هل أنت على وشك التخرج؟) ═══ -->
+<!-- ═══ SPLASH SCREEN ═══ -->
 <div id="splash-screen">
   <div class="splash-content">
     <div class="splash-icon">🎓</div>
@@ -690,35 +627,10 @@
 
 </div>
 
-<!-- ═══ FLOATING CAMERA BUTTON ═══ -->
-<button id="cam-btn" onclick="openCamera()" title="كاميرا التخرج">📸</button>
-
 <!-- ═══ FLOATING MUSIC BUTTON ═══ -->
 <button id="music-fab" onclick="toggleMusic()" title="تشغيل / إيقاف الموسيقى">
   <span id="music-fab-icon">🔇</span>
 </button>
-
-<!-- ═══ CAMERA MODAL ═══ -->
-<div class="modal-overlay" id="cam-modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeCamera()">✕</button>
-    <div class="modal-title">📸 كاميرا الخريج</div>
-    <div id="cam-preview-wrap">
-      <video id="cam-video" autoplay playsinline muted></video>
-      <canvas id="cam-canvas"></canvas>
-      <div class="cam-hat" id="cam-hat">🎓</div>
-      <div class="cam-overlay-text">IT GRADUATE 2026</div>
-    </div>
-    <div class="cam-btn-row">
-      <button class="btn btn-gold" id="snap-btn" onclick="snapPhoto()">📷 التقاط صورة</button>
-      <button class="btn btn-outline" id="rec-btn" onclick="toggleRecord()">⏺ تسجيل فيديو</button>
-      <button class="btn btn-ghost" id="dl-btn" onclick="downloadCapture()" style="display:none">⬇ تحميل</button>
-    </div>
-    <div style="margin-top:12px; text-align:center">
-      <img id="snap-preview" style="max-width:100%;border-radius:12px;display:none;margin-top:8px;" alt="صورة التخرج">
-    </div>
-  </div>
-</div>
 
 <!-- ═══ SHARE MODAL ═══ -->
 <div class="modal-overlay" id="share-modal">
@@ -761,15 +673,10 @@ const audio = document.getElementById('bg-audio');
 let musicPlaying = false;
 
 function initAfterSplash() {
-  // Show main content
   appContainer.classList.add('visible');
-  // Hide splash with animation
   splashScreen.classList.add('hide');
-  // Start ambient fireworks
   startAmbientFireworks();
-  // Enable music toggle button UI
   setMusicUI(false);
-  // Small toast to confirm experience started
   showToast('🎓 مرحباً بك في تجربة التخرج!');
 }
 
@@ -796,7 +703,6 @@ function startMusic() {
   });
 }
 
-// The BIG button click handler
 document.getElementById('splash-start-btn').addEventListener('click', () => {
   audio.play().then(() => {
     musicPlaying = true;
@@ -925,140 +831,11 @@ window.shareWhatsApp = shareWhatsApp;
 window.shareTwitter = shareTwitter;
 window.copyShare = copyShare;
 
-['share-modal','cam-modal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => {
-    if (e.target === document.getElementById(id)) {
-      document.getElementById(id).classList.remove('open');
-      if (id === 'cam-modal') stopCamera();
-    }
-  });
+document.getElementById('share-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('share-modal')) {
+    document.getElementById('share-modal').classList.remove('open');
+  }
 });
-
-// ════════════════════════════════════════
-//  CAMERA
-// ════════════════════════════════════════
-let stream = null;
-let mediaRecorder = null;
-let recordedChunks = [];
-let isRecording = false;
-let lastBlobURL = null;
-
-async function openCamera() {
-  document.getElementById('cam-modal').classList.add('open');
-  document.getElementById('cam-canvas').style.display = 'none';
-  document.getElementById('cam-video').style.display = 'block';
-  document.getElementById('snap-preview').style.display = 'none';
-  document.getElementById('dl-btn').style.display = 'none';
-
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    document.getElementById('cam-video').srcObject = stream;
-  } catch(e) {
-    showToast('⚠️ تعذّر الوصول للكاميرا — تأكد من منح الإذن');
-    closeCamera();
-  }
-}
-
-function stopCamera() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  if (isRecording) { mediaRecorder && mediaRecorder.stop(); isRecording = false; }
-}
-
-function closeCamera() {
-  stopCamera();
-  document.getElementById('cam-modal').classList.remove('open');
-}
-
-function snapPhoto() {
-  const video  = document.getElementById('cam-video');
-  const canvas = document.getElementById('cam-canvas');
-  canvas.width  = video.videoWidth  || 640;
-  canvas.height = video.videoHeight || 480;
-  const ctx = canvas.getContext('2d');
-
-  ctx.save();
-  ctx.scale(-1, 1);
-  ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
-  ctx.restore();
-
-  ctx.font = `${canvas.height * 0.18}px serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('🎓', canvas.width / 2, canvas.height * 0.15);
-
-  ctx.font = `bold ${canvas.height * 0.055}px 'Playfair Display', serif`;
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#F0C060';
-  ctx.shadowColor = 'rgba(0,0,0,0.8)';
-  ctx.shadowBlur  = 12;
-  ctx.fillText('IT GRADUATE 2026', canvas.width / 2, canvas.height - 20);
-
-  const preview = document.getElementById('snap-preview');
-  preview.src = canvas.toDataURL('image/jpeg', 0.92);
-  preview.style.display = 'block';
-
-  lastBlobURL = canvas.toDataURL('image/jpeg', 0.92);
-  document.getElementById('dl-btn').style.display = 'inline-flex';
-  showToast('📸 تم التقاط الصورة!');
-}
-
-function toggleRecord() {
-  if (!isRecording) {
-    startRecord();
-  } else {
-    stopRecord();
-  }
-}
-
-function startRecord() {
-  if (!stream) return;
-  recordedChunks = [];
-  const options = { mimeType: 'video/webm;codecs=vp9,opus' };
-  try { mediaRecorder = new MediaRecorder(stream, options); }
-  catch(e) { mediaRecorder = new MediaRecorder(stream); }
-
-  mediaRecorder.ondataavailable = e => {
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-    lastBlobURL = URL.createObjectURL(blob);
-    document.getElementById('dl-btn').style.display = 'inline-flex';
-    showToast('✅ الفيديو جاهز للتحميل!');
-  };
-
-  mediaRecorder.start(200);
-  isRecording = true;
-  document.getElementById('rec-btn').textContent = '⏹ إيقاف التسجيل';
-  document.getElementById('rec-btn').style.background = 'rgba(220,50,50,0.2)';
-  document.getElementById('rec-btn').style.borderColor = '#e05050';
-  document.getElementById('rec-btn').style.color = '#e05050';
-}
-
-function stopRecord() {
-  if (mediaRecorder && isRecording) {
-    mediaRecorder.stop();
-    isRecording = false;
-    document.getElementById('rec-btn').textContent = '⏺ تسجيل فيديو';
-    document.getElementById('rec-btn').style.background = '';
-    document.getElementById('rec-btn').style.borderColor = '';
-    document.getElementById('rec-btn').style.color = '';
-  }
-}
-
-function downloadCapture() {
-  if (!lastBlobURL) return;
-  const a = document.createElement('a');
-  a.href = lastBlobURL;
-  a.download = `graduation-${Date.now()}.${lastBlobURL.includes('data:image') ? 'jpg' : 'webm'}`;
-  a.click();
-  showToast('⬇️ تم تحميل الملف!');
-}
-
-window.openCamera = openCamera;
-window.closeCamera = closeCamera;
-window.snapPhoto = snapPhoto;
-window.toggleRecord = toggleRecord;
-window.downloadCapture = downloadCapture;
 
 // ════════════════════════════════════════
 //  FIREWORKS
@@ -1094,23 +871,19 @@ class Particle {
   }
 }
 
+let ambientInterval = null;
+
 function startAmbientFireworks() {
   canvas.style.display = 'block';
-  let count = 0;
-  const interval = setInterval(() => {
-    if (!appContainer.classList.contains('visible')) {
-      clearInterval(interval);
-      canvas.style.display = 'none';
-      return;
-    }
+  if (ambientInterval) clearInterval(ambientInterval);
+  
+  ambientInterval = setInterval(() => {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height * 0.4;
     for (let i = 0; i < 5; i++) {
       particles.push(new Particle(x, y));
     }
-    count++;
-    if (count > 100) clearInterval(interval);
-  }, 800);
+  }, 600);
 }
 
 function animateParticles() {
@@ -1118,16 +891,16 @@ function animateParticles() {
   particles = particles.filter(p => p.life > 0);
   particles.forEach(p => { p.update(); p.draw(); });
   ctx.globalAlpha = 1;
-  if (particles.length > 0 || appContainer.classList.contains('visible')) {
-    requestAnimationFrame(animateParticles);
-  }
+  requestAnimationFrame(animateParticles);
 }
 animateParticles();
 
 function triggerCelebration() {
   document.getElementById('celebration').classList.add('show');
   canvas.style.display = 'block';
-  for (let i = 0; i < 200; i++) {
+  if (ambientInterval) clearInterval(ambientInterval);
+  
+  for (let i = 0; i < 250; i++) {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
     particles.push(new Particle(x, y));
@@ -1154,6 +927,8 @@ window.showToast = showToast;
 function openCelebratePreview() {
   document.getElementById('celebration').classList.add('show');
   canvas.style.display = 'block';
+  if (ambientInterval) clearInterval(ambientInterval);
+  
   for (let i = 0; i < 150; i++) {
     const x = Math.random() * canvas.width;
     const y = Math.random() * canvas.height;
